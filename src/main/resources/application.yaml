@@ -1,0 +1,61 @@
+spring:
+  main:
+    web-application-type: "servlet"
+    banner-mode: "console"
+  profiles:
+    default: "production"
+
+
+server:
+  port: "${PORT:8443}"
+  ssl:
+    enabled: true
+    # --- KEYSTORE (server certificate) ---
+    key-store: /opt/certs/keystore.p12
+    key-store-password: "${KEY_STORE_PASSWORD:<set KEY_STORE_PASSWORD env var>}"
+    key-alias: ai-writing-detector-cert
+    key-store-type: PKCS12
+
+    # --- TRUSTSTORE (trusted CA certificates) ---
+    trust-store: /opt/certs/truststore.p12
+    trust-store-password: "${TRUST_STORE_PASSWORD:<set KEY_STORE_PASSWORD env var>}"
+    trust-store-type: PKCS12
+
+
+app:
+  timeout: 5000
+  hello-world-integration: hello-world
+  rest:
+    hello-world:
+      url: https://example.com
+      endpoints:
+        hello-world: /rest/ai/detector/hello-world
+      http:
+        connect-timeout: 5s
+        read-timeout: 30s
+        tls:
+          enabled: false
+          ssl-verification: true
+          # By default, outbound mTLS can reuse the same material as server.ssl.
+          key-store: "${CLIENT_KEY_STORE:${server.ssl.key-store:}}"
+          key-store-password: "${CLIENT_KEY_STORE_PASSWORD:${server.ssl.key-store-password:}}"
+          key-store-type: "${CLIENT_KEY_STORE_TYPE:${server.ssl.key-store-type:PKCS12}}"
+          trust-store: "${CLIENT_TRUST_STORE:${server.ssl.trust-store:}}"
+          trust-store-password: "${CLIENT_TRUST_STORE_PASSWORD:${server.ssl.trust-store-password:}}"
+          trust-store-type: "${CLIENT_TRUST_STORE_TYPE:${server.ssl.trust-store-type:PKCS12}}"
+        proxy:
+          enabled: false
+          host: ""
+          port: 8080
+        oauth:
+          mode: NONE # NONE | CONTEXT | BEARER
+          context:
+            issuer: login.axa.ch
+            subject: "${APP_HTTP_OAUTH_SUBJECT:my-subject}"
+            client-id: "${APP_HTTP_OAUTH_CLIENT_ID:my-client-id}"
+            ttl: 5m
+          client-credentials:
+            token-url: "${APP_HTTP_OAUTH_TOKEN_URL:https://login.axa.ch/oauth/token}"
+            client-id: "${APP_HTTP_OAUTH_CLIENT_ID:}"
+            client-secret: "${APP_HTTP_OAUTH_CLIENT_SECRET:}"
+            scope: "${APP_HTTP_OAUTH_SCOPE:}"

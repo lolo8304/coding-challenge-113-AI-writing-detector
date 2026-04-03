@@ -1,0 +1,20 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  ssl:
+    # --- KEYSTORE (server certificate) ---
+    key-store: certs/ai-writing-detector-keystore.p12
+
+    # --- TRUSTSTORE (trusted CA certificates) ---
+    trust-store: certs/truststore.p12
+
+app:
+  rest:
+    hello-world:
+      url: https://localhost:8443
+      http:
+        tls:
+          ssl-verification: false
