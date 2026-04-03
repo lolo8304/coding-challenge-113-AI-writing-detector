@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -227,6 +230,72 @@ class HttpClientTest {
 
         // Assert
         verify(authHeaderStrategy).apply(any());
+    }
+
+    @Test
+    void exchange_runsRefreshActionBeforeRequest() {
+        AtomicInteger refreshCounter = new AtomicInteger();
+        HttpClient clientWithRefresh = new HttpClient(
+                "integration-a",
+                "https://example.com",
+                () -> restClient,
+                () -> authHeaderStrategy,
+                refreshCounter::incrementAndGet,
+                HttpClientLoggingSettings.disabled()
+        );
+
+        when(restClient.method(HttpMethod.GET)).thenReturn(requestBodyUriSpec);
+        when(requestBodyUriSpec.uri("/refresh")).thenReturn(requestBodySpec);
+        when(requestBodySpec.headers(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(String.class)).thenReturn("ok");
+
+        clientWithRefresh.get("/refresh", String.class);
+
+        assertThat(refreshCounter.get()).isEqualTo(1);
+    }
+
+    @Test
+    void sanitizePath_masksDefaultAndConfiguredSensitiveQueryParameters() {
+        HttpClient clientWithMasking = new HttpClient(
+                "integration-a",
+                "https://example.com",
+                () -> restClient,
+                () -> authHeaderStrategy,
+                () -> {
+                },
+                new HttpClientLoggingSettings(true, false, false, false, Set.of("client_assertion"))
+        );
+
+        String sanitized = ReflectionTestUtils.invokeMethod(
+                clientWithMasking,
+                "sanitizePath",
+                "/hello?token=abc&client_assertion=jwt&name=ok"
+        );
+
+        assertThat(sanitized).isEqualTo("/hello?token=***&client_assertion=***&name=ok");
+    }
+
+    @Test
+    void sanitizePath_withShowSensitiveDataTrue_keepsOriginalQueryValues() {
+        HttpClient clientWithoutMasking = new HttpClient(
+                "integration-a",
+                "https://example.com",
+                () -> restClient,
+                () -> authHeaderStrategy,
+                () -> {
+                },
+                new HttpClientLoggingSettings(true, false, false, true, Set.of("client_assertion"))
+        );
+
+        String originalPath = "/hello?token=abc&client_assertion=jwt&name=ok";
+        String sanitized = ReflectionTestUtils.invokeMethod(
+                clientWithoutMasking,
+                "sanitizePath",
+                originalPath
+        );
+
+        assertThat(sanitized).isEqualTo(originalPath);
     }
 }
 

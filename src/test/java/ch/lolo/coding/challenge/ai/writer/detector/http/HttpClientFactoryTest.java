@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class HttpClientFactoryTest {
 
     @Mock
-    private ClientHttpRequestFactory requestFactory;
+    private RestClient restClient;
 
     @Mock
     private AuthHeaderStrategy authHeaderStrategy;
@@ -27,8 +27,20 @@ class HttpClientFactoryTest {
     void setUp() {
         factory = new HttpClientFactory(
                 Map.of(
-                        "integration-a", new HttpClientFactory.BackendIntegration("https://service-a.example.com", requestFactory, authHeaderStrategy),
-                        "integration-b", new HttpClientFactory.BackendIntegration("https://service-b.example.com", requestFactory, authHeaderStrategy)
+                        "integration-a", new HttpClientFactory.BackendIntegration(
+                                "https://service-a.example.com",
+                                () -> restClient,
+                                () -> authHeaderStrategy,
+                                () -> {
+                                },
+                                HttpClientLoggingSettings.disabled()),
+                        "integration-b", new HttpClientFactory.BackendIntegration(
+                                "https://service-b.example.com",
+                                () -> restClient,
+                                () -> authHeaderStrategy,
+                                () -> {
+                                },
+                                HttpClientLoggingSettings.disabled())
                 )
         );
     }

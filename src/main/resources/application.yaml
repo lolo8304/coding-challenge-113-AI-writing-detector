@@ -40,6 +40,7 @@ app:
           key-store: "${CLIENT_KEY_STORE:${server.ssl.key-store:}}"
           key-store-password: "${CLIENT_KEY_STORE_PASSWORD:${server.ssl.key-store-password:}}"
           key-store-type: "${CLIENT_KEY_STORE_TYPE:${server.ssl.key-store-type:PKCS12}}"
+          key-alias: "${CLIENT_KEY_ALIAS:${server.ssl.key-alias:}}"
           trust-store: "${CLIENT_TRUST_STORE:${server.ssl.trust-store:}}"
           trust-store-password: "${CLIENT_TRUST_STORE_PASSWORD:${server.ssl.trust-store-password:}}"
           trust-store-type: "${CLIENT_TRUST_STORE_TYPE:${server.ssl.trust-store-type:PKCS12}}"
@@ -48,7 +49,7 @@ app:
           host: ""
           port: 8080
         oauth:
-          mode: NONE # NONE | CONTEXT | BEARER
+          mode: NONE # Auth ist exklusiv: NONE | CONTEXT | BEARER | API_KEY
           context:
             issuer: login.axa.ch
             subject: "${APP_HTTP_OAUTH_SUBJECT:my-subject}"
@@ -59,3 +60,14 @@ app:
             client-id: "${APP_HTTP_OAUTH_CLIENT_ID:}"
             client-secret: "${APP_HTTP_OAUTH_CLIENT_SECRET:}"
             scope: "${APP_HTTP_OAUTH_SCOPE:}"
+        api-key:
+          # Legacy-Property `enabled` ist entfernt, da bereits deren Praesenz fail-fast ausloest.
+          header-name: "${APP_HTTP_API_KEY_HEADER:x-api-key}"
+          value: "${APP_HTTP_API_KEY:}"
+        logging:
+          log-request: true
+          log-response: true
+          log-errors: true
+          show-sensitive-data: false
+          sensitive-query-parameters:
+            - client_assertion

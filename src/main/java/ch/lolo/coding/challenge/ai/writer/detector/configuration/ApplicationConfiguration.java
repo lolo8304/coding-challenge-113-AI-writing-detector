@@ -3,7 +3,9 @@ package ch.lolo.coding.challenge.ai.writer.detector.configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "app")
@@ -77,6 +79,8 @@ public class ApplicationConfiguration {
 		private final Tls tls = new Tls();
 		private final Proxy proxy = new Proxy();
 		private final OAuth oauth = new OAuth();
+		private final ApiKey apiKey = new ApiKey();
+		private final Logging logging = new Logging();
 
 		public Duration getConnectTimeout() {
 			return connectTimeout;
@@ -105,6 +109,14 @@ public class ApplicationConfiguration {
 		public OAuth getOauth() {
 			return oauth;
 		}
+
+		public ApiKey getApiKey() {
+			return apiKey;
+		}
+
+		public Logging getLogging() {
+			return logging;
+		}
 	}
 
 	public static class Tls {
@@ -113,6 +125,7 @@ public class ApplicationConfiguration {
 		private String keyStore;
 		private String keyStorePassword;
 		private String keyStoreType = "PKCS12";
+		private String keyAlias;
 		private String trustStore;
 		private String trustStorePassword;
 		private String trustStoreType = "PKCS12";
@@ -155,6 +168,14 @@ public class ApplicationConfiguration {
 
 		public void setKeyStoreType(String keyStoreType) {
 			this.keyStoreType = keyStoreType;
+		}
+
+		public String getKeyAlias() {
+			return keyAlias;
+		}
+
+		public void setKeyAlias(String keyAlias) {
+			this.keyAlias = keyAlias;
 		}
 
 		public String getTrustStore() {
@@ -237,7 +258,82 @@ public class ApplicationConfiguration {
 	public enum OAuthMode {
 		NONE,
 		CONTEXT,
-		BEARER
+		BEARER,
+		API_KEY
+	}
+
+	public static class ApiKey {
+		private boolean enabled;
+		private String headerName = "x-api-key";
+		private String value;
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
+
+		public String getHeaderName() {
+			return headerName;
+		}
+
+		public void setHeaderName(String headerName) {
+			this.headerName = headerName;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+	}
+
+	public static class Logging {
+		private boolean logRequest;
+		private boolean logResponse;
+		private boolean logErrors;
+		private boolean showSensitiveData;
+		private final List<String> sensitiveQueryParameters = new ArrayList<>();
+
+		public boolean isLogRequest() {
+			return logRequest;
+		}
+
+		public void setLogRequest(boolean logRequest) {
+			this.logRequest = logRequest;
+		}
+
+		public boolean isLogResponse() {
+			return logResponse;
+		}
+
+		public void setLogResponse(boolean logResponse) {
+			this.logResponse = logResponse;
+		}
+
+		public boolean isLogErrors() {
+			return logErrors;
+		}
+
+		public void setLogErrors(boolean logErrors) {
+			this.logErrors = logErrors;
+		}
+
+		public boolean isShowSensitiveData() {
+			return showSensitiveData;
+		}
+
+		public void setShowSensitiveData(boolean showSensitiveData) {
+			this.showSensitiveData = showSensitiveData;
+		}
+
+		public List<String> getSensitiveQueryParameters() {
+			return sensitiveQueryParameters;
+		}
 	}
 
 	public static class Context {

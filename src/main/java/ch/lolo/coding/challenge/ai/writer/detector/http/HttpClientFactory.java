@@ -1,10 +1,10 @@
 package ch.lolo.coding.challenge.ai.writer.detector.http;
 
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class HttpClientFactory {
 
@@ -23,19 +23,26 @@ public class HttpClientFactory {
             throw new IllegalStateException("HTTP integration app.rest." + integrationName + ".url must be configured");
         }
 
-        RestClient restClient = RestClient.builder()
-                .baseUrl(integration.baseUrl())
-                .requestFactory(integration.requestFactory())
-                .build();
-        return new HttpClient(integrationName, integration.baseUrl(), restClient, integration.authHeaderStrategy());
+        return new HttpClient(
+                integrationName,
+                integration.baseUrl(),
+                integration.restClientSupplier(),
+                integration.authHeaderStrategySupplier(),
+                integration.refreshAction(),
+                integration.loggingSettings()
+        );
     }
 
     public record BackendIntegration(String baseUrl,
-                                     ClientHttpRequestFactory requestFactory,
-                                     AuthHeaderStrategy authHeaderStrategy) {
+                                     Supplier<RestClient> restClientSupplier,
+                                     Supplier<AuthHeaderStrategy> authHeaderStrategySupplier,
+                                     Runnable refreshAction,
+                                     HttpClientLoggingSettings loggingSettings) {
         public BackendIntegration {
-            Objects.requireNonNull(requestFactory, "requestFactory must not be null");
-            Objects.requireNonNull(authHeaderStrategy, "authHeaderStrategy must not be null");
+            Objects.requireNonNull(restClientSupplier, "restClientSupplier must not be null");
+            Objects.requireNonNull(authHeaderStrategySupplier, "authHeaderStrategySupplier must not be null");
+            Objects.requireNonNull(refreshAction, "refreshAction must not be null");
+            Objects.requireNonNull(loggingSettings, "loggingSettings must not be null");
         }
     }
 }
