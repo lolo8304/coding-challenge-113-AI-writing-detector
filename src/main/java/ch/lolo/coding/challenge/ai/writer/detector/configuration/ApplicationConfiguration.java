@@ -13,6 +13,7 @@ public class ApplicationConfiguration {
 
 	private int timeout = 5000;
 	private String helloWorldIntegration = "default";
+	private final Logging logging = new Logging();
 	private final Map<String, RestIntegration> rest = new LinkedHashMap<>();
 
 	public int getTimeout() {
@@ -33,6 +34,10 @@ public class ApplicationConfiguration {
 
 	public Map<String, RestIntegration> getRest() {
 		return rest;
+	}
+
+	public Logging getLogging() {
+		return logging;
 	}
 
 	public RestIntegration getRequiredIntegration(String name) {

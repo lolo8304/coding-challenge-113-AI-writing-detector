@@ -25,6 +25,13 @@ server:
 app:
   timeout: 5000
   hello-world-integration: hello-world
+  logging:
+    log-request: true
+    log-response: true
+    log-errors: true
+    show-sensitive-data: false
+    sensitive-query-parameters:
+      - client_assertion
   rest:
     hello-world:
       url: https://example.com
