@@ -36,7 +36,7 @@ app:
     hello-world:
       url: https://example.com
       endpoints:
-        hello-world: /rest/ai/detector/hello-world
+        hello-world: /rest/ai/detector/v1/hello-world
       http:
         connect-timeout: 5s
         read-timeout: 30s

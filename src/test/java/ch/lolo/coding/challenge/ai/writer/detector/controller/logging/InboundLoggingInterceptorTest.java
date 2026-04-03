@@ -30,7 +30,7 @@ class InboundLoggingInterceptorTest {
         InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
         ListAppender<ILoggingEvent> appender = attachAppender();
 
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/hello-world");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/v1/hello-world");
         request.setQueryString("client_assertion=jwt&name=ok");
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setStatus(200);
@@ -60,7 +60,7 @@ class InboundLoggingInterceptorTest {
         InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
         ListAppender<ILoggingEvent> appender = attachAppender();
 
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/hello-world");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/v1/hello-world");
         request.addHeader("x-axa-monitoring", "true");
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setStatus(200);
@@ -85,7 +85,7 @@ class InboundLoggingInterceptorTest {
         InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
         ListAppender<ILoggingEvent> appender = attachAppender();
 
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/hello-world");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/v1/hello-world");
         request.addHeader("x-axa-monitoring", "true");
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setStatus(500);
@@ -112,7 +112,7 @@ class InboundLoggingInterceptorTest {
         InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
         ListAppender<ILoggingEvent> appender = attachAppender();
 
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/hello-world");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/v1/hello-world");
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setStatus(200);
 
@@ -136,7 +136,7 @@ class InboundLoggingInterceptorTest {
         InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
         ListAppender<ILoggingEvent> appender = attachAppender();
 
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/hello-world");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/rest/ai/detector/v1/hello-world");
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setStatus(200);
 
