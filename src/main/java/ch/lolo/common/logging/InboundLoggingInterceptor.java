@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -85,6 +86,35 @@ public class InboundLoggingInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    private ObjectNode getBodyFromResponse(@NonNull HttpServletResponse response) {
+        if (!(response instanceof ContentCachingResponseWrapper wrappedResponse)) {
+            return null;
+        }
+
+        String contentType = response.getContentType();
+        if (contentType == null) {
+            return null;
+        }
+
+        String normalizedContentType = contentType.toLowerCase();
+        if (!normalizedContentType.contains("application/json") && !normalizedContentType.contains("+json")) {
+            return null;
+        }
+
+        byte[] body = wrappedResponse.getContentAsByteArray();
+        if (body.length == 0) {
+            return null;
+        }
+
+        try {
+            JsonNode parsed = OBJECT_MAPPER.readTree(body);
+            return parsed instanceof ObjectNode objectNode ? objectNode : null;
+        } catch (Exception parseError) {
+            log.debug("[INBOUND] Unable to parse response body as JSON object", parseError);
+            return null;
+        }
+    }
+
     private ObjectNode getBodyFromRequest(@NonNull HttpServletRequest request) {
         if (!(request instanceof ContentCachingRequestWrapper wrappedRequest)) {
             return null;
@@ -157,11 +187,14 @@ public class InboundLoggingInterceptor implements HandlerInterceptor {
         }
 
         if (effective.logResponse() && !monitoring) {
-            log.info("[INBOUND] COMPLETED {} {} | status={} | duration={}ms",
+            var body = this.getBodyFromResponse(response);
+            var bodyPreview = body == null ? "non-JSON body" : body.toString();
+            log.info("[INBOUND] COMPLETED {} {} | status={} | duration={}ms | hasBody=true | body={}",
                     request.getMethod(),
                     sanitizeRequestUri(request, effective.showSensitiveData()),
                     response.getStatus(),
-                    durationMs);
+                    durationMs,
+                    bodyPreview);
         }
     }
 

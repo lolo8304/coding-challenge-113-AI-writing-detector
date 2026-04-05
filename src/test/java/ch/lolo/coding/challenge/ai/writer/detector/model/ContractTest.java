@@ -1,6 +1,7 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model;
 
 import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.Contract;
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.ContractFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,6 +17,7 @@ class ContractTest {
 
     static final String UUID_PATTERN =
             "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+    private static final ContractFactory contractFactory = new ContractFactory();
 
     // ── id ────────────────────────────────────────────────────────────────────
 
@@ -49,7 +51,7 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie", "Diana", "X", "LongNameForHashing123"})
     void fromName_setsNameAndGeneratesUuidId(String name) {
         // Arrange + Act
-        Contract contract = Contract.fromName(name);
+        Contract contract = contractFactory.fromName(name);
 
         // Assert
         assertThat(contract.getName()).isEqualTo(name);
@@ -64,7 +66,7 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie"})
     void fromName_setCurrencyToCHF(String name) {
         // Arrange + Act
-        Contract contract = Contract.fromName(name);
+        Contract contract = contractFactory.fromName(name);
 
         // Assert
         assertThat(contract.getPremium().getCurrency()).isEqualTo(Currency.CHF);
@@ -76,7 +78,7 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie"})
     void fromName_premiumsNotNull(String name) {
         // Arrange + Act
-        Contract contract = Contract.fromName(name);
+        Contract contract = contractFactory.fromName(name);
 
         // Assert
         assertThat(contract.getPremium()).isNotNull();
@@ -93,7 +95,7 @@ class ContractTest {
         BigDecimal step = new BigDecimal("0.05");
 
         // Act
-        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
+        BigDecimal premium = contractFactory.fromName(name).getPremium().getAmount();
 
         // Assert
         BigDecimal remainder = premium.remainder(step);
@@ -109,7 +111,7 @@ class ContractTest {
         BigDecimal minPremium = new BigDecimal("0.05");
 
         // Act
-        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
+        BigDecimal premium = contractFactory.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(premium.compareTo(minPremium))
@@ -121,7 +123,7 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie", "Diana", "X", "LongNameForHashing123"})
     void fromName_premiumHasTwoDecimalPlaces(String name) {
         // Arrange + Act
-        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
+        BigDecimal premium = contractFactory.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(premium.scale())
@@ -135,8 +137,8 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie"})
     void fromName_deterministicPremiumForSameName(String name) {
         // Arrange + Act
-        BigDecimal p1 = Contract.fromName(name).getPremium().getAmount();
-        BigDecimal p2 = Contract.fromName(name).getPremium().getAmount();
+        BigDecimal p1 = contractFactory.fromName(name).getPremium().getAmount();
+        BigDecimal p2 = contractFactory.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(p1).isEqualByComparingTo(p2);
@@ -154,8 +156,8 @@ class ContractTest {
     @MethodSource("differentNamePairs")
     void fromName_differentNamesProduceDifferentPremiums(String nameA, String nameB) {
         // Arrange + Act
-        BigDecimal premiumA = Contract.fromName(nameA).getPremium().getAmount();
-        BigDecimal premiumB = Contract.fromName(nameB).getPremium().getAmount();
+        BigDecimal premiumA = contractFactory.fromName(nameA).getPremium().getAmount();
+        BigDecimal premiumB = contractFactory.fromName(nameB).getPremium().getAmount();
 
         // Assert
         assertThat(premiumA).isNotEqualByComparingTo(premiumB);

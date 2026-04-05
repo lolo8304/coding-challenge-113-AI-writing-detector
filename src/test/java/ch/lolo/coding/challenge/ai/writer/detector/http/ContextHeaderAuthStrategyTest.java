@@ -77,9 +77,9 @@ class ContextHeaderAuthStrategyTest {
         String payloadJson = new String(BASE64_DECODER.decode(parts[1]));
         var payload = objectMapper.readTree(payloadJson);
 
-        assertThat(payload.get("iss").asText()).isEqualTo("test-issuer");
-        assertThat(payload.get("sub").asText()).isEqualTo("test-subject");
-        assertThat(payload.get("client_id").asText()).isEqualTo("test-client-id");
+        assertThat(payload.get("iss").asString()).isEqualTo("test-issuer");
+        assertThat(payload.get("sub").asString()).isEqualTo("test-subject");
+        assertThat(payload.get("client_id").asString()).isEqualTo("test-client-id");
         assertThat(payload.has("iat")).isTrue();
         assertThat(payload.has("exp")).isTrue();
         assertThat(payload.has("jti")).isTrue();
@@ -101,8 +101,8 @@ class ContextHeaderAuthStrategyTest {
         String headerJson = new String(BASE64_DECODER.decode(parts[0]));
         var jwtHeader = objectMapper.readTree(headerJson);
 
-        assertThat(jwtHeader.get("alg").asText()).isEqualTo("none");
-        assertThat(jwtHeader.get("typ").asText()).isEqualTo("JWT");
+        assertThat(jwtHeader.get("alg").asString()).isEqualTo("none");
+        assertThat(jwtHeader.get("typ").asString()).isEqualTo("JWT");
     }
 
     @Test
@@ -172,8 +172,8 @@ class ContextHeaderAuthStrategyTest {
         String payload1 = new String(BASE64_DECODER.decode(parts1[1]));
         String payload2 = new String(BASE64_DECODER.decode(parts2[1]));
 
-        var jti1 = objectMapper.readTree(payload1).get("jti").asText();
-        var jti2 = objectMapper.readTree(payload2).get("jti").asText();
+        var jti1 = objectMapper.readTree(payload1).get("jti").asString();
+        var jti2 = objectMapper.readTree(payload2).get("jti").asString();
         assertThat(jti1).isNotEqualTo(jti2);
     }
 }

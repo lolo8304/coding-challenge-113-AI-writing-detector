@@ -12,7 +12,7 @@ import tools.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -54,15 +54,14 @@ class ContractRequestVersioningAdviceTest {
                 new ServletServerHttpRequest(request),
                 contractParameter(),
                 Contract.class,
-                MappingJackson2HttpMessageConverter.class
+                JacksonJsonHttpMessageConverter.class
         );
 
         // Assert
         ObjectNode rewritten = objectMapper.readValue(transformed.getBody(), ObjectNode.class);
-        assertThat(rewritten.get("name").asText()).isEqualTo("My contract 42");
-        assertThat(rewritten.get("premium").get("amount").asDouble()).isEqualTo(123.45d);
-        assertThat(rewritten.get("premium").get("currency").asText()).isEqualTo("CHF");
-        assertThat(rewritten.has("premium")).isFalse();
+        assertThat(rewritten.get("name").asString()).isEqualTo("My contract 42");
+        assertThat(rewritten.get("premiums").get("amount").asDouble()).isEqualTo(123.45d);
+        assertThat(rewritten.get("premiums").get("currency").asString()).isEqualTo("CHF");
     }
 
     @Test
@@ -87,7 +86,7 @@ class ContractRequestVersioningAdviceTest {
                 input,
                 contractParameter(),
                 Contract.class,
-                MappingJackson2HttpMessageConverter.class
+                JacksonJsonHttpMessageConverter.class
         );
 
         // Assert
@@ -138,15 +137,14 @@ class ContractRequestVersioningAdviceTest {
                     wrappedInput,
                     contractParameter(),
                     Contract.class,
-                    MappingJackson2HttpMessageConverter.class
+                    JacksonJsonHttpMessageConverter.class
             );
 
             // Assert
             ObjectNode rewritten = objectMapper.readValue(transformed.getBody(), ObjectNode.class);
-            assertThat(rewritten.get("name").asText()).isEqualTo("My contract 42");
-            assertThat(rewritten.get("premium").get("amount").asDouble()).isEqualTo(123.45d);
-            assertThat(rewritten.get("premium").get("currency").asText()).isEqualTo("CHF");
-            assertThat(rewritten.has("premium")).isFalse();
+            assertThat(rewritten.get("name").asString()).isEqualTo("My contract 42");
+            assertThat(rewritten.get("premiums").get("amount").asDouble()).isEqualTo(123.45d);
+            assertThat(rewritten.get("premiums").get("currency").asString()).isEqualTo("CHF");
         } finally {
             RequestContextHolder.resetRequestAttributes();
         }
@@ -168,12 +166,12 @@ class ContractRequestVersioningAdviceTest {
         boolean contractSupported = advice.supports(
                 contractParameter(),
                 Contract.class,
-                MappingJackson2HttpMessageConverter.class
+                JacksonJsonHttpMessageConverter.class
         );
         boolean stringSupported = advice.supports(
                 stringParameter(),
                 String.class,
-                MappingJackson2HttpMessageConverter.class
+                JacksonJsonHttpMessageConverter.class
         );
 
         // Assert

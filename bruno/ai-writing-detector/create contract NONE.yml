@@ -1,7 +1,7 @@
 info:
   name: create contract NONE
   type: http
-  seq: 6
+  seq: 7
 
 http:
   method: POST
@@ -10,7 +10,9 @@ http:
     type: json
     data: |-
       {
-        "name": "My contract 42"
+        "name": "Lorenz Hänggi",
+        "firstName": "Lorenz",
+        "lastName": "Hänggi"
       }
   auth: inherit
 

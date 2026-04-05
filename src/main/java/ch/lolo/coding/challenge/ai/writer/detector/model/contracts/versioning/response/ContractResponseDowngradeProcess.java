@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.response;
 
+import ch.lolo.common.versioning.VersionTransformProcess;
 import ch.lolo.common.versioning.VersionTransition;
 import tools.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Component;
@@ -7,20 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ContractResponseDowngradeProcess {
-
-    private final ContractResponseDowngradeFactory factory;
+public class ContractResponseDowngradeProcess extends VersionTransformProcess<ContractResponseDowngrader> {
 
     public ContractResponseDowngradeProcess(ContractResponseDowngradeFactory factory) {
-        this.factory = factory;
+        super(factory);
     }
 
     public ObjectNode downgrade(ObjectNode source, List<VersionTransition> transitions) {
-        ObjectNode current = source.deepCopy();
-        for (VersionTransition transition : transitions) {
-            current = factory.getRequired(transition).transform(current);
-        }
-        return current;
+        return transform(source, transitions);
     }
 }
 

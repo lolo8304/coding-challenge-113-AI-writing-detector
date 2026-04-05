@@ -14,7 +14,7 @@ import tools.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -60,7 +60,7 @@ class ContractResponseVersioningAdviceTest {
                 latest,
                 returnType(),
                 MediaType.APPLICATION_JSON,
-                MappingJackson2HttpMessageConverter.class,
+                JacksonJsonHttpMessageConverter.class,
                 new ServletServerHttpRequest(request),
                 new ServletServerHttpResponse(new MockHttpServletResponse())
         );
@@ -68,9 +68,8 @@ class ContractResponseVersioningAdviceTest {
         // Assert
         assertThat(body).isInstanceOf(ObjectNode.class);
         ObjectNode rewritten = (ObjectNode) body;
-        assertThat(rewritten.get("name").asText()).isEqualTo("My contract 42");
-        assertThat(rewritten.get("premium").asDouble()).isEqualTo(123.45d);
-        assertThat(rewritten.has("premium")).isFalse();
+        assertThat(rewritten.get("name").asString()).isEqualTo("My contract 42");
+        assertThat(rewritten.has("customerName")).isFalse();
         assertThat(rewritten.has("id")).isFalse();
     }
 
@@ -97,7 +96,7 @@ class ContractResponseVersioningAdviceTest {
                 latest,
                 returnType(),
                 MediaType.APPLICATION_JSON,
-                MappingJackson2HttpMessageConverter.class,
+                JacksonJsonHttpMessageConverter.class,
                 new ServletServerHttpRequest(request),
                 new ServletServerHttpResponse(new MockHttpServletResponse())
         );
@@ -119,8 +118,8 @@ class ContractResponseVersioningAdviceTest {
                 new ContractResponseVersioningAdvice(objectMapper, new ContractResponseDowngradeProcess(factory));
 
         // Act
-        boolean contractSupported = advice.supports(returnType(), MappingJackson2HttpMessageConverter.class);
-        boolean stringSupported = advice.supports(stringReturnType(), MappingJackson2HttpMessageConverter.class);
+        boolean contractSupported = advice.supports(returnType(), JacksonJsonHttpMessageConverter.class);
+        boolean stringSupported = advice.supports(stringReturnType(), JacksonJsonHttpMessageConverter.class);
 
         // Assert
         assertThat(contractSupported).isTrue();

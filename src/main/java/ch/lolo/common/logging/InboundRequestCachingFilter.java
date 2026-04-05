@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 
@@ -24,13 +25,19 @@ public class InboundRequestCachingFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        if (request instanceof ContentCachingRequestWrapper) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        ContentCachingRequestWrapper wrappedRequest = request instanceof ContentCachingRequestWrapper requestWrapper
+                ? requestWrapper
+                : new ContentCachingRequestWrapper(request, REQUEST_CACHE_LIMIT_BYTES);
 
-        ContentCachingRequestWrapper wrappedRequest =
-                new ContentCachingRequestWrapper(request, REQUEST_CACHE_LIMIT_BYTES);
-        filterChain.doFilter(wrappedRequest, response);
+        ContentCachingResponseWrapper wrappedResponse = response instanceof ContentCachingResponseWrapper responseWrapper
+                ? responseWrapper
+                : new ContentCachingResponseWrapper(response);
+
+        try {
+            filterChain.doFilter(wrappedRequest, wrappedResponse);
+        } finally {
+            // Important: forward cached response body to the client.
+            wrappedResponse.copyBodyToResponse();
+        }
     }
 }

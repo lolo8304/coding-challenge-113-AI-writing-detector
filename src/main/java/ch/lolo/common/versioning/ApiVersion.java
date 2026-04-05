@@ -9,7 +9,8 @@ import java.util.Arrays;
 public enum ApiVersion {
     V2024_01_01(LocalDate.of(2024, 1, 1)),
     V2025_01_01(LocalDate.of(2025, 1, 1)),
-    V2026_01_01(LocalDate.of(2026, 1, 1));
+    V2026_01_01(LocalDate.of(2026, 1, 1)),
+    V2026_04_01(LocalDate.of(2026, 4, 1));
 
     public static final String VERSION_HEADER = "x-version";
 
