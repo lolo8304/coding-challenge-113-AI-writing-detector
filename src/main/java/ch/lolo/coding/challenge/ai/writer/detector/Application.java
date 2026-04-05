@@ -1,12 +1,12 @@
 package ch.lolo.coding.challenge.ai.writer.detector;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
-import ch.lolo.coding.challenge.ai.writer.detector.configuration.DotenvConfig;
+import ch.lolo.common.configuration.DotenvConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "ch.lolo")
 @EnableConfigurationProperties(ApplicationConfiguration.class)
 public class Application {
 

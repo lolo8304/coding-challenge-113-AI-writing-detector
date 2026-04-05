@@ -1,8 +1,8 @@
 package ch.lolo.coding.challenge.ai.writer.detector.controller.logging;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
-import ch.lolo.coding.challenge.ai.writer.detector.logging.ControllerLogging;
-import ch.lolo.coding.challenge.ai.writer.detector.logging.InboundLoggingInterceptor;
+import ch.lolo.common.logging.ControllerLogging;
+import ch.lolo.common.logging.InboundLoggingInterceptor;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -150,6 +152,41 @@ class InboundLoggingInterceptorTest {
         assertThat(appender.list).hasSize(2);
         assertThat(appender.list.get(0).getFormattedMessage()).contains("[INBOUND]");
         assertThat(appender.list.get(1).getFormattedMessage()).contains("COMPLETED");
+
+        detachAppender(appender);
+    }
+
+    @Test
+    void afterCompletion_logsJsonBody_whenWrappedRequestWasConsumed() throws Exception {
+        ApplicationConfiguration.Logging logging = new ApplicationConfiguration.Logging();
+        logging.setLogRequest(true);
+        logging.setLogResponse(true);
+        logging.setLogErrors(true);
+
+        InboundLoggingInterceptor interceptor = new InboundLoggingInterceptor(logging);
+        ListAppender<ILoggingEvent> appender = attachAppender();
+
+        MockHttpServletRequest rawRequest = new MockHttpServletRequest("POST", "/rest/ai/detector/v1/contracts");
+        rawRequest.setContentType("application/json");
+        rawRequest.setContent("{\"name\":\"Acme\"}".getBytes(StandardCharsets.UTF_8));
+        ContentCachingRequestWrapper request = new ContentCachingRequestWrapper(rawRequest, 1024 * 1024);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setStatus(200);
+
+        HandlerMethod handler = handlerMethod();
+
+        interceptor.preHandle(request, response, handler);
+        // Simulate MVC reading @RequestBody, which fills the content cache.
+        request.getInputStream().readAllBytes();
+        interceptor.afterCompletion(request, response, handler, null);
+
+        List<ILoggingEvent> events = appender.list;
+        assertThat(events).hasSize(2);
+        assertThat(events.get(0).getFormattedMessage())
+                .contains("hasBody=true")
+                .contains("\"name\":\"Acme\"");
+        assertThat(events.get(1).getFormattedMessage()).contains("COMPLETED").contains("status=200");
 
         detachAppender(appender);
     }

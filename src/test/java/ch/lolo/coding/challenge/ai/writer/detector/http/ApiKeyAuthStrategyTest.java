@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.http;
 
+import ch.lolo.common.http.ApiKeyAuthStrategy;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 

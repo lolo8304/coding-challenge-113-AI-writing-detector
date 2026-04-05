@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.versioning;
 
+import ch.lolo.common.versioning.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

@@ -1,6 +1,7 @@
 package ch.lolo.coding.challenge.ai.writer.detector.versioning;
 
-import ch.lolo.coding.challenge.ai.writer.detector.exception.BadRequestException;
+import ch.lolo.common.exception.BadRequestException;
+import ch.lolo.common.versioning.ApiVersion;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 

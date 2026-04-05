@@ -13,7 +13,7 @@ http:
     type: json
     data: |-
       {
-        "name": "My contract 42"
+        "customerName": "My contract 42"
       }
   auth: inherit
 

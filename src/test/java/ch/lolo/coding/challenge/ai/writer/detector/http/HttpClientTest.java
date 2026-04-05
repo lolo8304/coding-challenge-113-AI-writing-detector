@@ -1,5 +1,8 @@
 package ch.lolo.coding.challenge.ai.writer.detector.http;
 
+import ch.lolo.common.http.AuthHeaderStrategy;
+import ch.lolo.common.http.HttpClient;
+import ch.lolo.common.http.HttpClientLoggingSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

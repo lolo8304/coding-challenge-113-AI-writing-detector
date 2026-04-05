@@ -1,6 +1,7 @@
 package ch.lolo.coding.challenge.ai.writer.detector.http;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
+import ch.lolo.common.http.ContextHeaderAuthStrategy;
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

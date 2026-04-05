@@ -1,5 +1,8 @@
 package ch.lolo.coding.challenge.ai.writer.detector.versioning;
 
+import ch.lolo.common.versioning.ApiVersion;
+import ch.lolo.common.versioning.VersionChainPlanner;
+import ch.lolo.common.versioning.VersionTransition;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

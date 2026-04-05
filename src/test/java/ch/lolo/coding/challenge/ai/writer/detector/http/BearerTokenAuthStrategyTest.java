@@ -1,5 +1,7 @@
 package ch.lolo.coding.challenge.ai.writer.detector.http;
 
+import ch.lolo.common.http.BearerTokenAuthStrategy;
+import ch.lolo.common.http.OAuthClientCredentialsTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

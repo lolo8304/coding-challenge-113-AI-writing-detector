@@ -1,14 +1,14 @@
 package ch.lolo.coding.challenge.ai.writer.detector.versioning.contract.response;
 
-import ch.lolo.coding.challenge.ai.writer.detector.contracts.versioning.response.*;
 import ch.lolo.coding.challenge.ai.writer.detector.model.Amount;
-import ch.lolo.coding.challenge.ai.writer.detector.contracts.model.Contract;
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.Contract;
 import ch.lolo.coding.challenge.ai.writer.detector.model.Currency;
-import ch.lolo.coding.challenge.ai.writer.detector.versioning.ApiVersion;
-import ch.lolo.coding.challenge.ai.writer.detector.versioning.VersionContext;
-import ch.lolo.coding.challenge.ai.writer.detector.versioning.VersionContextHolder;
-import ch.lolo.coding.challenge.ai.writer.detector.versioning.VersionTransition;
-import ch.lolo.coding.challenge.ai.writer.detector.contracts.versioning.aggregate.PremiumsAggregateTransformer;
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.response.*;
+import ch.lolo.common.versioning.ApiVersion;
+import ch.lolo.common.versioning.VersionContext;
+import ch.lolo.common.versioning.VersionContextHolder;
+import ch.lolo.common.versioning.VersionTransition;
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.aggregate.PremiumsAggregateTransformer;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class ContractResponseVersioningAdviceTest {
 
         Contract latest = Contract.builder()
                 .name("My contract 42")
-                .premiums(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
+                .premium(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
                 .build();
 
         // Act
@@ -70,7 +70,7 @@ class ContractResponseVersioningAdviceTest {
         ObjectNode rewritten = (ObjectNode) body;
         assertThat(rewritten.get("name").asText()).isEqualTo("My contract 42");
         assertThat(rewritten.get("premium").asDouble()).isEqualTo(123.45d);
-        assertThat(rewritten.has("premiums")).isFalse();
+        assertThat(rewritten.has("premium")).isFalse();
         assertThat(rewritten.has("id")).isFalse();
     }
 
@@ -88,7 +88,7 @@ class ContractResponseVersioningAdviceTest {
 
         Contract latest = Contract.builder()
                 .name("My contract 42")
-                .premiums(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
+                .premium(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
                 .build();
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/rest/ai/detector/v1/hello-world");
 

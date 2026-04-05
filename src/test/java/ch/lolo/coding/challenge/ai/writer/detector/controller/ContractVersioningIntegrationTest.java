@@ -1,6 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.controller;
 
-import ch.lolo.coding.challenge.ai.writer.detector.versioning.ApiVersion;
+import ch.lolo.common.versioning.ApiVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +60,11 @@ class ContractVersioningIntegrationTest {
 
     @Test
     void post_contracts_withVersion2025_upgradesRequestAndDowngradesResponse() throws Exception {
-        // Arrange – v2025 client sends "customerName" + nested "premiums"
+        // Arrange – v2025 client sends "customerName" + nested "premium"
         String v2025Body = """
                 {
                   "customerName": "Acme Corp",
-                  "premiums": { "amount": 500.00, "currency": "CHF" }
+                  "premium": { "amount": 500.00, "currency": "CHF" }
                 }
                 """;
 
@@ -88,11 +88,11 @@ class ContractVersioningIntegrationTest {
 
     @Test
     void post_contracts_withoutVersionHeader_usesLatestAndReturnsCurrentStructure() throws Exception {
-        // Arrange – latest client sends new structure: "name" + nested "premiums"
+        // Arrange – latest client sends new structure: "name" + nested "premium"
         String latestBody = """
                 {
                   "name": "Acme Corp",
-                  "premiums": { "amount": 500.00, "currency": "CHF" }
+                  "premium": { "amount": 500.00, "currency": "CHF" }
                 }
                 """;
 

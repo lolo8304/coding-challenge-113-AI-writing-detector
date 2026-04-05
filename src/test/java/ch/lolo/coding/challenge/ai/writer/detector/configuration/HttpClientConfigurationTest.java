@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.configuration;
 
+import ch.lolo.common.configuration.HttpClientConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 import tools.jackson.databind.ObjectMapper;

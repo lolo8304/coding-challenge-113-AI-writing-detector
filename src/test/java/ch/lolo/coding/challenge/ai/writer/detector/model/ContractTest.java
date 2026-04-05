@@ -1,6 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model;
 
-import ch.lolo.coding.challenge.ai.writer.detector.contracts.model.Contract;
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.Contract;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -67,7 +67,7 @@ class ContractTest {
         Contract contract = Contract.fromName(name);
 
         // Assert
-        assertThat(contract.getPremiums().getCurrency()).isEqualTo(Currency.CHF);
+        assertThat(contract.getPremium().getCurrency()).isEqualTo(Currency.CHF);
     }
 
     // ── fromName: premium not null ────────────────────────────────────────────
@@ -79,9 +79,9 @@ class ContractTest {
         Contract contract = Contract.fromName(name);
 
         // Assert
-        assertThat(contract.getPremiums()).isNotNull();
-        assertThat(contract.getPremiums().getAmount()).isNotNull();
-        assertThat(contract.getPremiums().getCurrency()).isNotNull();
+        assertThat(contract.getPremium()).isNotNull();
+        assertThat(contract.getPremium().getAmount()).isNotNull();
+        assertThat(contract.getPremium().getCurrency()).isNotNull();
     }
 
     // ── fromName: premium rounding ────────────────────────────────────────────
@@ -93,7 +93,7 @@ class ContractTest {
         BigDecimal step = new BigDecimal("0.05");
 
         // Act
-        BigDecimal premium = Contract.fromName(name).getPremiums().getAmount();
+        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
 
         // Assert
         BigDecimal remainder = premium.remainder(step);
@@ -109,7 +109,7 @@ class ContractTest {
         BigDecimal minPremium = new BigDecimal("0.05");
 
         // Act
-        BigDecimal premium = Contract.fromName(name).getPremiums().getAmount();
+        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(premium.compareTo(minPremium))
@@ -121,7 +121,7 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie", "Diana", "X", "LongNameForHashing123"})
     void fromName_premiumHasTwoDecimalPlaces(String name) {
         // Arrange + Act
-        BigDecimal premium = Contract.fromName(name).getPremiums().getAmount();
+        BigDecimal premium = Contract.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(premium.scale())
@@ -135,8 +135,8 @@ class ContractTest {
     @ValueSource(strings = {"Alice", "Bob", "Charlie"})
     void fromName_deterministicPremiumForSameName(String name) {
         // Arrange + Act
-        BigDecimal p1 = Contract.fromName(name).getPremiums().getAmount();
-        BigDecimal p2 = Contract.fromName(name).getPremiums().getAmount();
+        BigDecimal p1 = Contract.fromName(name).getPremium().getAmount();
+        BigDecimal p2 = Contract.fromName(name).getPremium().getAmount();
 
         // Assert
         assertThat(p1).isEqualByComparingTo(p2);
@@ -154,8 +154,8 @@ class ContractTest {
     @MethodSource("differentNamePairs")
     void fromName_differentNamesProduceDifferentPremiums(String nameA, String nameB) {
         // Arrange + Act
-        BigDecimal premiumA = Contract.fromName(nameA).getPremiums().getAmount();
-        BigDecimal premiumB = Contract.fromName(nameB).getPremiums().getAmount();
+        BigDecimal premiumA = Contract.fromName(nameA).getPremium().getAmount();
+        BigDecimal premiumB = Contract.fromName(nameB).getPremium().getAmount();
 
         // Assert
         assertThat(premiumA).isNotEqualByComparingTo(premiumB);
