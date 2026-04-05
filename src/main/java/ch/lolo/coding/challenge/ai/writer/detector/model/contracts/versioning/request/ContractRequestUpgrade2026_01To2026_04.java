@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.request;
 
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.ContractFactory;
 import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.aggregate.PremiumsAggregateTransformer;
 import ch.lolo.common.versioning.ApiVersion;
 import ch.lolo.common.versioning.VersionTransition;
@@ -27,20 +28,10 @@ public class ContractRequestUpgrade2026_01To2026_04 extends BaseJsonTransformer 
         // split name into firstName and lastname by " "
         // if only 2 all fine. if 3 mainly 2 firstNames, if 4 firstName and lastName has 2
         String name = target.path("name").asString();
-        String[] nameParts = name.split(" ");
-        if (nameParts.length == 2) {
-            target.put("firstName", nameParts[0]);
-            target.put("lastName", nameParts[1]);
-        } else if (nameParts.length == 3) {
-            target.put("firstName", nameParts[0] + " " + nameParts[1]);
-            target.put("lastName", nameParts[2]);
-        } else if (nameParts.length == 4) {
-            target.put("firstName", nameParts[0]);
-            target.put("lastName", nameParts[1] + " " + nameParts[2] + " " + nameParts[3]);
-        } else {
-            target.put("firstName", "");
-            target.put("lastName", name);
-        }
+        var splitted = ContractFactory.splitName(name);
+        target.put("firstName", splitted[0]);
+        target.put("lastName", splitted[1]);
+        removeField(target, "name");
         return target;
     }
 }

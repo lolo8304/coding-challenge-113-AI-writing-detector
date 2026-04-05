@@ -51,7 +51,7 @@ class ContractResponseVersioningAdviceTest {
         ));
 
         Contract latest = Contract.builder()
-                .name("My contract 42")
+                .firstName("My contract").lastName("42")
                 .premium(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
                 .build();
 
@@ -86,7 +86,8 @@ class ContractResponseVersioningAdviceTest {
                 new ContractResponseVersioningAdvice(objectMapper, new ContractResponseDowngradeProcess(factory));
 
         Contract latest = Contract.builder()
-                .name("My contract 42")
+                .firstName("My contract")
+                .lastName("42")
                 .premium(Amount.builder().amount(new BigDecimal("123.45")).currency(Currency.CHF).build())
                 .build();
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/rest/ai/detector/v1/hello-world");

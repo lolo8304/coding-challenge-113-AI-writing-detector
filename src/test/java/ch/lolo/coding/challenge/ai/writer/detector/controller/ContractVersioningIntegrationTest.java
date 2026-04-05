@@ -53,7 +53,7 @@ class ContractVersioningIntegrationTest {
 
         // Assert – response is downgraded back to v2024 structure (flat "premium", no "id")
         assertThat(responseBody).contains("\"premium\"");
-        assertThat(responseBody).doesNotContain("\"premiums\"");
+        assertThat(responseBody).doesNotContain("\"amount\"");
         assertThat(responseBody).doesNotContain("\"id\"");
         assertThat(responseBody).contains("\"name\"");
     }
@@ -83,7 +83,7 @@ class ContractVersioningIntegrationTest {
         // Assert – response is downgraded back to v2025 structure ("customerName", no "id")
         assertThat(responseBody).contains("\"customerName\"");
         assertThat(responseBody).doesNotContain("\"id\"");
-        assertThat(responseBody).contains("\"premiums\"");
+        assertThat(responseBody).contains("\"premium\"");
     }
 
     @Test
@@ -109,7 +109,7 @@ class ContractVersioningIntegrationTest {
 
         // Assert – response is full latest structure
         assertThat(responseBody).contains("\"name\"");
-        assertThat(responseBody).contains("\"premiums\"");
+        assertThat(responseBody).contains("\"premium\"");
         assertThat(responseBody).contains("\"id\"");
     }
 }

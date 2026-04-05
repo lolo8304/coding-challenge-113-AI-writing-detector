@@ -24,7 +24,7 @@ class ContractTest {
     @Test
     void builder_generatesUuidId() {
         // Arrange
-        Contract contract = Contract.builder().name("Alice").build();
+        Contract contract = Contract.builder().firstName("Alice").build();
 
         // Act
         String id = contract.getId();
@@ -38,8 +38,8 @@ class ContractTest {
     @Test
     void builder_generatesDifferentIdsForEachInstance() {
         // Arrange + Act
-        Contract c1 = Contract.builder().name("Alice").build();
-        Contract c2 = Contract.builder().name("Alice").build();
+        Contract c1 = Contract.builder().firstName("Alice").build();
+        Contract c2 = Contract.builder().firstName("Alice").build();
 
         // Assert
         assertThat(c1.getId()).isNotEqualTo(c2.getId());

@@ -37,9 +37,9 @@ public class PremiumsAggregateTransformer {
 
         JsonNode amount = premiums.get("amount");
         if (amount != null) {
+            json.remove("premium");
             json.set("premium", amount);
         }
-        json.remove("premium");
     }
 
     private ObjectNode ensurePremiums(ObjectNode json) {

@@ -40,6 +40,6 @@ public class AiWritingDetectorController {
 
     @RequestMapping(value = "contracts", method = RequestMethod.POST)
     Contract createContract(@RequestBody Contract contract) {
-        return contractFactory.fromName(contract.getName());
+        return contractFactory.fromName(contract.getFirstName(), contract.getLastName());
     }
 }

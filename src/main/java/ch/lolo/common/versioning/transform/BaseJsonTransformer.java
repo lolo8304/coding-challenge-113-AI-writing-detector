@@ -22,6 +22,10 @@ public abstract class BaseJsonTransformer implements JsonVersionTransformer {
         ObjectNode parent = parentNode(root, path, true);
         parent.set(lastSegment(path), value);
     }
+    protected void addField(ObjectNode root, String path, String value) {
+        ObjectNode parent = parentNode(root, path, true);
+        parent.set(lastSegment(path), JsonNodeFactory.instance.stringNode(value));
+    }
 
     protected void renameField(ObjectNode root, String fromPath, String toPath) {
         JsonNode value = readField(root, fromPath);

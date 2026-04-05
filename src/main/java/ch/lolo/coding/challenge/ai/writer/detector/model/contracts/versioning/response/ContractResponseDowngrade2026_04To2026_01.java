@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model.contracts.versioning.response;
 
+import ch.lolo.coding.challenge.ai.writer.detector.model.contracts.ContractFactory;
 import ch.lolo.common.versioning.ApiVersion;
 import ch.lolo.common.versioning.VersionTransition;
 import ch.lolo.common.versioning.transform.BaseJsonTransformer;
@@ -17,6 +18,8 @@ public class ContractResponseDowngrade2026_04To2026_01 extends BaseJsonTransform
     @Override
     public ObjectNode transform(ObjectNode source) {
         ObjectNode target = source.deepCopy();
+        var name = ContractFactory.toName(target.path("firstName").asString(), target.path("lastName").asString());
+        addField(target, "name", name);
         removeField(target, "firstName");
         removeField(target, "lastName");
         return target;

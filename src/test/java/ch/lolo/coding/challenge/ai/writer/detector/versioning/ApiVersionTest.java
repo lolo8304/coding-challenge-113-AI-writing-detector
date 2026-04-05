@@ -13,7 +13,7 @@ class ApiVersionTest {
     @Test
     void latest_returnsMostRecentVersion() {
         // Arrange
-        ApiVersion expected = ApiVersion.V2026_01_01;
+        ApiVersion expected = ApiVersion.V2026_04_01;
 
         // Act
         ApiVersion actual = ApiVersion.latest();

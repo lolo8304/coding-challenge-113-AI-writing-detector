@@ -27,12 +27,12 @@ class VersionContextInterceptorTest {
         assertThat(proceed).isTrue();
         VersionContext context = VersionContextHolder.getRequired(request);
         assertThat(context.requestedVersion()).isEqualTo(ApiVersion.V2024_01_01);
-        assertThat(context.requestUpgradeTransitions()).hasSize(2);
-        assertThat(context.responseDowngradeTransitions()).hasSize(2);
+        assertThat(context.requestUpgradeTransitions()).hasSize(3);
+        assertThat(context.responseDowngradeTransitions()).hasSize(3);
         assertThat(context.requestUpgradeTransitions().get(0))
                 .isEqualTo(new VersionTransition(ApiVersion.V2024_01_01, ApiVersion.V2025_01_01));
         assertThat(context.responseDowngradeTransitions().get(0))
-                .isEqualTo(new VersionTransition(ApiVersion.V2026_01_01, ApiVersion.V2025_01_01));
+                .isEqualTo(new VersionTransition(ApiVersion.V2026_04_01, ApiVersion.V2026_01_01));
     }
 
     @Test

@@ -10,7 +10,6 @@ http:
     type: json
     data: |-
       {
-        "name": "Lorenz Hänggi",
         "firstName": "Lorenz",
         "lastName": "Hänggi"
       }

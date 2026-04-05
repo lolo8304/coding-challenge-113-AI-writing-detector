@@ -1,6 +1,8 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model.contracts;
 
 import ch.lolo.coding.challenge.ai.writer.detector.model.Amount;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +20,6 @@ public class Contract {
 
     @Setter
     @Getter
-    private String name;
-
-    @Setter
-    @Getter
     private String firstName;
 
     @Setter
@@ -32,4 +30,8 @@ public class Contract {
     @Getter
     private Amount premium;
 
+    @JsonIgnore
+    public String getName() {
+        return ContractFactory.toName(firstName, lastName);
+    }
 }

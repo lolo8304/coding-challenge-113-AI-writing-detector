@@ -47,9 +47,9 @@ The application also demonstrates advanced API versioning capabilities through H
 
 ### 3. Supported API Versions
 - `2024-01-01`: Initial version with basic contract fields (name, firstName, lastName, premium)
-- `2025-01-01`: Upgraded schema with `customerName` instead of `name`
-- `2026-01-01`: Further schema changes
-- `2026-04-01`: Latest version with additional fields
+- `2025-01-01`: Upgraded schema with `customerName` instead of `name`, add `premiums` object with `amount` and `currency`
+- `2026-01-01`: change customerName back to name
+- `2026-04-01`: Latest version with firstName and lastName instead of name
 
 ## Prerequisites
 
@@ -242,7 +242,6 @@ Content-Type: application/json
 
 **Response**: Contract object with populated fields including:
 - `id`: UUID of the contract
-- `name`/`customerName`: Customer identifier (depends on version)
 - `firstName`, `lastName`: Customer names
 - `premium`: Amount object with `amount` and `currency`
 
@@ -278,11 +277,11 @@ This allows clients to use any supported version without needing to update their
 
 #### 2025-01-01 → 2026-01-01 Upgrade
 - **Field Changes**:
-  - `firstName` and `lastName` are aggregated
+  - `customerName` → `name`
 
 #### 2026-01-01 → 2026-04-01 Upgrade
 - **Field Changes**:
-  - Additional fields and structure refinements
+  - `name` → `firstName` and `lastName` (split the name into two fields)
 
 #### Downgrade Process
 Responses are automatically downgraded in reverse order to match the requested version.
@@ -310,6 +309,14 @@ The `ContractRequestVersioningAdvice` intercepts the request and reads the `x-ve
 #### Step 4: Business Logic Processes Latest Version
 
 The controller receives the contract in the latest version format and processes it.
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+```
+
 
 #### Step 5: Response Downgrade
 
@@ -321,12 +328,7 @@ The `ContractResponseVersioningAdvice` intercepts the response and downgrades it
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "John Doe",
-  "firstName": null,
-  "lastName": null,
-  "premium": {
-    "amount": 12345.67,
-    "currency": "CHF"
-  }
+  "premium": 12345.67
 }
 ```
 
@@ -351,12 +353,7 @@ curl -X POST https://localhost:8443/rest/ai/detector/v1/contracts \
 {
   "id": "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6",
   "name": "Lorenz Hänggi",
-  "firstName": null,
-  "lastName": null,
-  "premium": {
-    "amount": 5432.10,
-    "currency": "CHF"
-  }
+  "premium": 5432.10
 }
 ```
 
@@ -401,8 +398,6 @@ curl -X POST https://localhost:8443/rest/ai/detector/v1/contracts \
 {
   "id": "c3d4e5f6-g7h8-49i0-j1k2-l3m4n5o6p7q8",
   "name": "Lorenz Hänggi",
-  "firstName": null,
-  "lastName": null,
   "premium": {
     "amount": 5432.10,
     "currency": "CHF"
@@ -418,7 +413,8 @@ curl -X POST https://localhost:8443/rest/ai/detector/v1/contracts \
   -H "x-version: 2026-04-01" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Lorenz Hänggi"
+    "firstName": "Lorenz",
+    "lastName": "Hänggi"
   }'
 ```
 
@@ -426,9 +422,8 @@ curl -X POST https://localhost:8443/rest/ai/detector/v1/contracts \
 ```json
 {
   "id": "d4e5f6g7-h8i9-50j1-k2l3-m4n5o6p7q8r9",
-  "name": "Lorenz Hänggi",
-  "firstName": null,
-  "lastName": null,
+  "firstName": "Lorenz",
+  "lastName": "Hänggi",
   "premium": {
     "amount": 5432.10,
     "currency": "CHF"
