@@ -108,7 +108,9 @@ class ContractVersioningIntegrationTest {
         String responseBody = result.getResponse().getContentAsString();
 
         // Assert – response is full latest structure
-        assertThat(responseBody).contains("\"name\"");
+        assertThat(responseBody).contains("\"firstName\"");
+        assertThat(responseBody).contains("\"lastName\"");
+        assertThat(responseBody).doesNotContain("name");
         assertThat(responseBody).contains("\"premium\"");
         assertThat(responseBody).contains("\"id\"");
     }

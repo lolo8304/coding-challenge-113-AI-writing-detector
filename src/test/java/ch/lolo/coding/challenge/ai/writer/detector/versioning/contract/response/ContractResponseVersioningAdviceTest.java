@@ -34,6 +34,7 @@ class ContractResponseVersioningAdviceTest {
         ObjectMapper objectMapper = new ObjectMapper();
         PremiumsAggregateTransformer premiums = new PremiumsAggregateTransformer();
         ContractResponseDowngradeFactory factory = new ContractResponseDowngradeFactory(List.of(
+                new ContractResponseDowngrade2026_04To2026_01(),
                 new ContractResponseDowngrade2026To2025(),
                 new ContractResponseDowngrade2025To2024(premiums)
         ));
@@ -45,6 +46,7 @@ class ContractResponseVersioningAdviceTest {
                 ApiVersion.V2024_01_01,
                 List.of(),
                 List.of(
+                        new VersionTransition(ApiVersion.V2026_04_01, ApiVersion.V2026_01_01),
                         new VersionTransition(ApiVersion.V2026_01_01, ApiVersion.V2025_01_01),
                         new VersionTransition(ApiVersion.V2025_01_01, ApiVersion.V2024_01_01)
                 )
