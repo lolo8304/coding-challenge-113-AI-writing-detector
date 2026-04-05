@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+server:
+  ssl:
+    enabled: false
+
+app:
+  rest:
+    hello-world:
+      url: https://localhost:8443
+      http:
+        tls:
+          ssl-verification: false
+

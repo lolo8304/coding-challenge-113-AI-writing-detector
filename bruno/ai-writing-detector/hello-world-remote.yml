@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: https://localhost:8443/rest/ai/detector/v1/hello-world
+  url: https://localhost:8443/rest/ai/detector/v1/hello-world-remote
   auth: inherit
 
 settings:

@@ -1,7 +1,9 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -10,6 +12,8 @@ import java.math.RoundingMode;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Amount {
 
     private static final BigDecimal STEP = new BigDecimal("0.05");

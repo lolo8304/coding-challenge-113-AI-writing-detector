@@ -1,5 +1,6 @@
 package ch.lolo.coding.challenge.ai.writer.detector.model;
 
+import ch.lolo.coding.challenge.ai.writer.detector.contracts.model.Contract;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

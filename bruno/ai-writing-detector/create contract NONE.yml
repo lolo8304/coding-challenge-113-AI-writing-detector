@@ -1,0 +1,21 @@
+info:
+  name: create contract NONE
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: https://localhost:8443/rest/ai/detector/v1/contracts
+  body:
+    type: json
+    data: |-
+      {
+        "name": "My contract 42"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

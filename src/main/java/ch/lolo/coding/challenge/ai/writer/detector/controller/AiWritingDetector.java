@@ -2,7 +2,7 @@ package ch.lolo.coding.challenge.ai.writer.detector.controller;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
 import ch.lolo.coding.challenge.ai.writer.detector.http.HttpClient;
-import ch.lolo.coding.challenge.ai.writer.detector.model.Contract;
+import ch.lolo.coding.challenge.ai.writer.detector.contracts.model.Contract;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

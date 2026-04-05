@@ -1,11 +1,14 @@
 info:
-  name: create contract
+  name: create contract 2025
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: POST
   url: https://localhost:8443/rest/ai/detector/v1/contracts
+  headers:
+    - name: x-version
+      value: 2025-01-01
   body:
     type: json
     data: |-

@@ -1,4 +1,4 @@
-package ch.lolo.coding.challenge.ai.writer.detector.controller.logging;
+package ch.lolo.coding.challenge.ai.writer.detector.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

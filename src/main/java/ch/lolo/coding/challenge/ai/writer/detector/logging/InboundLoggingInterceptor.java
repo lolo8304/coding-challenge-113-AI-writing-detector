@@ -1,4 +1,4 @@
-package ch.lolo.coding.challenge.ai.writer.detector.controller.logging;
+package ch.lolo.coding.challenge.ai.writer.detector.logging;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 
@@ -25,6 +29,7 @@ import java.util.List;
 public class InboundLoggingInterceptor implements HandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(InboundLoggingInterceptor.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static final String MONITORING_HEADER = "x-axa-monitoring";
     private static final List<String> SENSITIVE_QUERY_HINTS = List.of(
@@ -65,13 +70,52 @@ public class InboundLoggingInterceptor implements HandlerInterceptor {
         request.setAttribute(ATTR_EFFECTIVE, effective);
 
         if (effective.logRequest() && !monitoring) {
-            log.info("[INBOUND] {} {} | from={} | monitoring=false",
-                    request.getMethod(),
-                    sanitizeRequestUri(request, effective.showSensitiveData()),
-                    request.getRemoteAddr());
+            if (request.getContentLength() > 0) {
+                var body = this.getBodyFromRequest(request);
+                var bodyPreview = body == null ? "non-JSON body" : body.toString();
+                log.info("[INBOUND] {} {} | from={} | monitoring=false | hasBody=true | body={}",
+                        request.getMethod(),
+                        sanitizeRequestUri(request, effective.showSensitiveData()),
+                        request.getRemoteAddr(),
+                        bodyPreview);
+            } else {
+                log.info("[INBOUND] {} {} | from={} | monitoring=false | hasBody=false",
+                        request.getMethod(),
+                        sanitizeRequestUri(request, effective.showSensitiveData()),
+                        request.getRemoteAddr());
+            }
         }
 
         return true;
+    }
+
+    private ObjectNode getBodyFromRequest(@NonNull HttpServletRequest request) {
+        if (!(request instanceof ContentCachingRequestWrapper wrappedRequest)) {
+            return null;
+        }
+
+        String contentType = request.getContentType();
+        if (contentType == null) {
+            return null;
+        }
+
+        String normalizedContentType = contentType.toLowerCase();
+        if (!normalizedContentType.contains("application/json") && !normalizedContentType.contains("+json")) {
+            return null;
+        }
+
+        byte[] body = wrappedRequest.getContentAsByteArray();
+        if (body.length == 0) {
+            return null;
+        }
+
+        try {
+            JsonNode parsed = OBJECT_MAPPER.readTree(body);
+            return parsed instanceof ObjectNode objectNode ? objectNode : null;
+        } catch (Exception parseError) {
+            log.debug("[INBOUND] Unable to parse request body as JSON object", parseError);
+            return null;
+        }
     }
 
     @Override

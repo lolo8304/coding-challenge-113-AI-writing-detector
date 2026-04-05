@@ -1,6 +1,7 @@
 package ch.lolo.coding.challenge.ai.writer.detector.configuration;
 
-import ch.lolo.coding.challenge.ai.writer.detector.controller.logging.InboundLoggingInterceptor;
+import ch.lolo.coding.challenge.ai.writer.detector.logging.InboundLoggingInterceptor;
+import ch.lolo.coding.challenge.ai.writer.detector.versioning.VersionContextInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,14 +13,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final ApplicationConfiguration applicationConfiguration;
+    private final VersionContextInterceptor versionContextInterceptor;
 
-    public WebMvcConfiguration(ApplicationConfiguration applicationConfiguration) {
+    public WebMvcConfiguration(ApplicationConfiguration applicationConfiguration,
+                               VersionContextInterceptor versionContextInterceptor) {
         this.applicationConfiguration = applicationConfiguration;
+        this.versionContextInterceptor = versionContextInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new InboundLoggingInterceptor(applicationConfiguration.getLogging()));
+        registry.addInterceptor(versionContextInterceptor)
+                .addPathPatterns("/rest/ai/detector/v1/contracts");
     }
 }
-

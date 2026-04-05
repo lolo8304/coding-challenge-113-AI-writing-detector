@@ -1,5 +1,7 @@
-package ch.lolo.coding.challenge.ai.writer.detector.model;
+package ch.lolo.coding.challenge.ai.writer.detector.contracts.model;
 
+import ch.lolo.coding.challenge.ai.writer.detector.model.Amount;
+import ch.lolo.coding.challenge.ai.writer.detector.model.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,8 @@
 package ch.lolo.coding.challenge.ai.writer.detector.controller.logging;
 
 import ch.lolo.coding.challenge.ai.writer.detector.configuration.ApplicationConfiguration;
+import ch.lolo.coding.challenge.ai.writer.detector.logging.ControllerLogging;
+import ch.lolo.coding.challenge.ai.writer.detector.logging.InboundLoggingInterceptor;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
